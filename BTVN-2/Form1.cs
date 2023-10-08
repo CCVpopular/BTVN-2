@@ -16,6 +16,10 @@ namespace BTVN_2
     public partial class Form1 : Form
     {
         private DataGridView backupDataGridView;
+        Microsoft.Office.Interop.Excel.Application excel = null;
+        Workbook workbook = null;
+        Worksheet sheet = null;
+        Range range = null;
         public Form1()
         {
             InitializeComponent();
@@ -30,10 +34,10 @@ namespace BTVN_2
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
                     textBoxfilepath.Text = ofd.FileName;
-                    Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-                    Workbook workbook = excel.Workbooks.Open(ofd.FileName);
-                    Worksheet sheet = workbook.Worksheets[1];
-                    Range range = sheet.UsedRange;
+                    excel = new Microsoft.Office.Interop.Excel.Application();
+                    workbook = excel.Workbooks.Open(ofd.FileName);
+                    sheet = workbook.Worksheets[1];
+                    range = sheet.UsedRange;
                     dataGridView1.Rows.Clear();
                     dataGridView1.Columns.Clear();
                     dataGridView1.Columns.Add("Column 1", "TT");
@@ -61,9 +65,10 @@ namespace BTVN_2
                 dataGridView1.Rows.Clear();
                 dataGridView1.Columns.Clear();
                 textBoxfilepath.Text = "";
+                excel.Workbooks.Close();
+                excel.Quit();
                 MessageBox.Show(ex.Message);
             }
-
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -89,10 +94,10 @@ namespace BTVN_2
                 ofd.Filter = "Excel Files|*.xls;*.xlsx";
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    Microsoft.Office.Interop.Excel.Application excel = new Microsoft.Office.Interop.Excel.Application();
-                    Workbook workbook = excel.Workbooks.Open(ofd.FileName);
-                    Worksheet sheet = workbook.Worksheets[1];
-                    Range range = sheet.UsedRange;
+                    excel = new Microsoft.Office.Interop.Excel.Application();
+                    workbook = excel.Workbooks.Open(ofd.FileName);
+                    sheet = workbook.Worksheets[1];
+                    range = sheet.UsedRange;
                     for(int i = 1; i < (dataGridView1.Columns.Count); i++) 
                     {
                         if (dataGridView1.Columns[i].HeaderText.ToString() != range.Cells[1,i].Value.ToString())
@@ -147,6 +152,8 @@ namespace BTVN_2
                     }
                     dataGridView1.Rows.Add(newRow);
                 }
+                excel.Workbooks.Close();
+                excel.Quit();
                 MessageBox.Show(ex.Message);
             }
         }
